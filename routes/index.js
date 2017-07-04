@@ -95,7 +95,7 @@ router.post("/", function(req, res, next) {
           }
         } else {
           var errMessage = "Некорректный ввод. " + allComands();
-          let correctAnswer = ["Cменить","Сегодня","Завтра","Неделя","Месяц","Год"];
+          let correctAnswer = ["Сменить","Сегодня","Завтра","Неделя","Месяц","Год"];
           let day;
           switch(content) {
               case "Сегодня": day = "today";  break;
@@ -118,10 +118,8 @@ router.post("/", function(req, res, next) {
                 });
               })
             }
-
           }
            else {
-            console.log(errMessage);
         		sms(errMessage, chatId, ip);
           }
         }
