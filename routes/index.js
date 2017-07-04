@@ -55,15 +55,17 @@ router.post("/", function(req, res, next) {
         if (user.state){
           let correctAnswer = ["1","2","3","4","5","6","7","8","9","10","11","12","13"];
           let errMessage = "Некорректный ввод. " + selectRegion();
+          let sign_name;
+          let sign_db;
           if (correctAnswer.indexOf(content)>= 0) {
             switch(content) {
                 case 1:
-                    let sign_name = "Овен";
-                    let sing_db = 1;
+                    sign_name = "Овен";
+                    sing_db = 1;
                     break;
                 case 2:
-                    let sign_name = "Телец";
-                    let sing_db = 2;
+                    sign_name = "Телец";
+                    ing_db = 2;
                     break;
             };
             var message = "Вы выбрали знак "+ sign_name +". Вот гороскоп на сегодня для этого знака";
