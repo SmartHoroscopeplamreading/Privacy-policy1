@@ -53,10 +53,21 @@ router.post("/", function(req, res, next) {
       		return;
       	}
         if (user.state){
-          var errMessage = "Некорректный ввод. " + selectRegion();
-          if(content == "1") {
-            var message = "Вы выбрали знак Овен. Вот гороскоп на сегодня для этого знака";
-            db.update({sign: 1, state:false}, {where: {userId: userId}}).then(function(user) {
+          let correctAnswer = ["1","2","3","4","5","6","7","8","9","10","11","12","13"];
+          let errMessage = "Некорректный ввод. " + selectRegion();
+          if (correctAnswer.indexOf(content)>= 0) {
+            switch(content) {
+                case 1:
+                    let sign_name = "Овен";
+                    let sing_db = 1;
+                    break;
+                case 2:
+                    let sign_name = "Телец";
+                    let sing_db = 2;
+                    break;
+            };
+            var message = "Вы выбрали знак "+ sign_name +". Вот гороскоп на сегодня для этого знака";
+            db.update({sign: sign_db, state:false}, {where: {userId: userId}}).then(function(user) {
               sms(message, chatId, ip, function() {
                 setTimeout(function() {
                   sms('Horoscope today', chatId, ip,function() {
@@ -68,21 +79,6 @@ router.post("/", function(req, res, next) {
               })
             })
           }
-          else if(content == "2") {
-            var message = "Вы выбрали знак Телец. Вот гороскоп на сегодня для этого знака";
-            db.update({sign: 2, state:false}, {where: {userId: userId}}).then(function(user) {
-              sms(message, chatId, ip, function() {
-                setTimeout(function() {
-                  sms('Horoscope today', chatId, ip,function() {
-                    setTimeout(function() {
-                      sms('All commands', chatId, ip);
-                    }, 3000);
-                  });
-                }, 1000);
-              })
-            })
-          }
-
           else {
             console.log(errMessage);
         		sms(errMessage, chatId, ip);
