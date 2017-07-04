@@ -124,7 +124,7 @@ router.post("/", function(req, res, next) {
                       sms(message, chatId, ip, token);
                     })
                   }
-                }
+                })
             }
             else {
               parser.getHoroscope(user.sign, day, function(result) {
