@@ -17,7 +17,7 @@ router.post("/", function(req, res, next) {
   var ip = req.connection.remoteAddress;
     var event = req.body.event;
     var selectRegion = function() {
-      return " Выберите Ваш знак гороскопа, для этого введите нужную цифру:\n1⃣ Овен .\n2⃣ Телец. \n3⃣ Близнецы. \n4⃣ Рак. \n5⃣ Лев. \n6⃣ Дева. \n7 Весы. \n8 Скорпион. \n9 Стрелец. \n10 Козерог. \n11 Водолей. \n12 Рыбы. \n13 Гороскоп для всех задиаков.";
+      return " Выберите Ваш знак гороскопа, для этого введите нужную цифру:\n1⃣ Овен .\n2⃣ Телец. \n3⃣ Близнецы. \n4⃣ Рак. \n5⃣ Лев. \n6⃣ Дева. \n7 Весы. \n8 Скорпион. \n9 Стрелец. \n10 Козерог. \n11 Водолей. \n12 Рыбы. \n13 Гороскоп для всех зодиаков.";
     }
     var changeRegion = function () {
       return "Введите 'cменить', чтобы сменить знак гороскопа "
@@ -59,11 +59,11 @@ router.post("/", function(req, res, next) {
           let sign_db;
           if (correctAnswer.indexOf(content)>= 0) {
             switch(content) {
-                case 1:
+                case "1":
                     sign_name = "Овен";
                     sing_db = 1;
                     break;
-                case 2:
+                case "2":
                     sign_name = "Телец";
                     ing_db = 2;
                     break;
