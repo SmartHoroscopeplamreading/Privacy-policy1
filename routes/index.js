@@ -21,8 +21,8 @@ router.post("/", function(req, res, next) {
     var selectSign = function() {
       return " Выберите Ваш знак гороскопа, для этого введите нужную цифру:\n1⃣ Овен .\n2⃣ Телец. \n3⃣ Близнецы. \n4⃣ Рак. \n5⃣ Лев. \n6⃣ Дева. \n7 Весы. \n8 Скорпион. \n9 Стрелец. \n10 Козерог. \n11 Водолей. \n12 Рыбы. \n13 Гороскоп для всех зодиаков.";
     }
-    var allComands = function () {
-      return "Пришлите мне одну из команд: \n 'Сегодня', чтобы получить гороскоп на сегодня \n 'Завтра', чтобы получить гороскоп на завтра \n 'Неделя', чтобы получить гороскоп на неделю \n 'Месяц', чтобы получить гороскоп на месяц \n 'Год', чтобы получить гороскоп на год \n 'Сменить', чтобы сменить знак гороскопа "
+    var allComands = function (user) {
+      return "Пришлите мне одну из команд: \n 'Сегодня', чтобы получить гороскоп на сегодня \n 'Завтра', чтобы получить гороскоп на завтра \n 'Неделя', чтобы получить гороскоп на неделю \n 'Месяц', чтобы получить гороскоп на месяц \n 'Год', чтобы получить гороскоп на год \n 'Сменить', чтобы сменить знак гороскопа. \n 'Подписка', чтобы " + (user.state ? "отключить" : "включить") + " ежедневную подписку."
     }
 
     if(event == "user/unfollow") {
@@ -82,7 +82,7 @@ router.post("/", function(req, res, next) {
                   parser.getHoroscope(sign_db,'today', function(result) {
                     sms(result, chatId, ip,function() {
                       setTimeout(function() {
-                        sms(allComands(), chatId, ip);
+                        sms(allComands(user), chatId, ip);
                       }, 3000);
                     });
                   })
@@ -94,7 +94,7 @@ router.post("/", function(req, res, next) {
         		sms(errMessage, chatId, ip);
           }
         } else {
-          var errMessage = "Некорректный ввод. " + allComands();
+          var errMessage = "Некорректный ввод. " + allComands(user);
           let correctAnswer = ["Сменить","Сегодня","Завтра","Неделя","Месяц","Год"];
           let day;
           switch(content) {
@@ -109,11 +109,25 @@ router.post("/", function(req, res, next) {
               db.update({state: true}, {where: {userId: userId}}).then(function(user) {
                 sms(selectSign(), chatId, ip);
               })
-            } else{
+            }
+            else if (content == "Подписка") {
+              if(user.state) {
+                db.update({subscribed: false}, {where: {userId: userId, ip: ip}}).then(function(user) {
+                  let message = "Вы отключили ежедневную рассылку."+allComands(user);
+                  sms(message, chatId, ip, token);
+                })
+              } else {
+                db.update({subscribed: true}, {where: {userId: userId, ip: ip}}).then(function(user) {
+                  let message = "Вы включили ежедневную рассылку."+allComands(user);
+                  sms(message, chatId, ip, token);
+                })
+              }
+            }
+            else {
               parser.getHoroscope(user.sign, day, function(result) {
                 sms(result, chatId, ip,function() {
                   setTimeout(function() {
-                    sms(allComands(), chatId, ip);
+                    sms(allComands(user), chatId, ip);
                   }, 3000);
                 });
               })

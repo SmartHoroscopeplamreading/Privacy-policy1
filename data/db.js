@@ -19,6 +19,10 @@ var user = sequelize.define("user", {
 	sign: {
 		type: Sequelize.INTEGER,
 	    defaultValue: 13
+	},
+	subscribed:{
+		type:Sequelize.BOOLEAN,
+			defaultValue:false
 	}
 })
 
