@@ -18,7 +18,7 @@ exports.getHoroscope = function(sign,day,callback) {
   case 11: sign_name = "aquarius"; break;
   case 12: sign_name = "pisces"; break;}
 
-  let url = 'https://horo.mail.ru/prediction/'+ sign_name +'/'+ day +'/';
+  let url = 'https://horo.mail.ru/prediction/'+ (sign == 13 ? "" : sign_name) +'/'+ day +'/';
 
 	request(url,function(err, res, body) {
     if (!err && res.statusCode == 200) {
