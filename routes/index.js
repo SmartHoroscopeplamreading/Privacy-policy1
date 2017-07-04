@@ -59,11 +59,11 @@ router.post("/", function(req, res, next) {
             db.update({sign: 1, state:false}, {where: {userId: userId}}).then(function(user) {
               sms(message, chatId, ip, function() {
                 setTimeout(function() {
-                  'Horoscope today', chatId, ip,function() {
+                  sms('Horoscope today', chatId, ip,function() {
                     setTimeout(function() {
                       sms('All commands', chatId, ip);
                     }, 3000);
-                  };
+                  });
                 }, 1000);
               })
             })
@@ -73,11 +73,11 @@ router.post("/", function(req, res, next) {
             db.update({sign: 2, state:false}, {where: {userId: userId}}).then(function(user) {
               sms(message, chatId, ip, function() {
                 setTimeout(function() {
-                  'Horoscope today', chatId, ip,function() {
+                  sms('Horoscope today', chatId, ip,function() {
                     setTimeout(function() {
                       sms('All commands', chatId, ip);
                     }, 3000);
-                  };
+                  });
                 }, 1000);
               })
             })
