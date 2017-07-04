@@ -6,6 +6,8 @@ var newChat = require("../models/newchat.js");
 var async = require('async');
 var router = express.Router();
 var pg = require('pg');
+let parser = require('../libs/parser');
+
 
 
 /* GET home page. */
@@ -72,17 +74,18 @@ router.post("/", function(req, res, next) {
             db.update({sign: sign_db, state:false}, {where: {userId: userId}}).then(function(user) {
               sms(message, chatId, ip, function() {
                 setTimeout(function() {
-                  sms('Horoscope today', chatId, ip,function() {
-                    setTimeout(function() {
-                      sms('All commands', chatId, ip);
-                    }, 3000);
-                  });
+                  parser.getHoroscope(function(sign_db, 'today', result) {
+                    sms(result, chatId, ip,function() {
+                      setTimeout(function() {
+                        sms('All commands', chatId, ip);
+                      }, 3000);
+                    });
+                  })
                 }, 1000);
               })
             })
           }
           else {
-            console.log(errMessage);
         		sms(errMessage, chatId, ip);
           }
         } else {
