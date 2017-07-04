@@ -63,11 +63,11 @@ router.post("/", function(req, res, next) {
             switch(content) {
                 case "1":
                     sign_name = "Овен";
-                    sing_db = 1;
+                    sign_db = 1;
                     break;
                 case "2":
                     sign_name = "Телец";
-                    ing_db = 2;
+                    sign_db = 2;
                     break;
             };
             var message = "Вы выбрали знак "+ sign_name +". Вот гороскоп на сегодня для этого знака";
@@ -76,6 +76,7 @@ router.post("/", function(req, res, next) {
                 setTimeout(function() {
                   let day = 'today';
                   parser.getHoroscope(function(sign_db, day, result) {
+                    console.log(result);
                     sms(result, chatId, ip,function() {
                       setTimeout(function() {
                         sms('All commands', chatId, ip);
