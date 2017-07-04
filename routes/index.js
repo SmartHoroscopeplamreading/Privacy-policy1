@@ -63,16 +63,16 @@ router.post("/", function(req, res, next) {
             switch(content) {
                 case "1": sign_name = "Овен"; sign_db = 1; break;
                 case "2": sign_name = "Телец"; sign_db = 2; break;
-                case "3": sign_name = "Близнецы"; sign_db = 2; break;
-                case "4": sign_name = "Рак"; sign_db = 2; break;
-                case "5": sign_name = "Лев"; sign_db = 2; break;
-                case "6": sign_name = "Дева"; sign_db = 2; break;
-                case "7": sign_name = "Весы"; sign_db = 2; break;
-                case "8": sign_name = "Скорпион"; sign_db = 2; break;
-                case "9": sign_name = "Стрелец"; sign_db = 2; break;
-                case "10": sign_name = "Козерог"; sign_db = 2; break;
-                case "11": sign_name = "Водолей"; sign_db = 2; break;
-                case "12": sign_name = "Рыбы"; sign_db = 2; break;
+                case "3": sign_name = "Близнецы"; sign_db = 3; break;
+                case "4": sign_name = "Рак"; sign_db = 4; break;
+                case "5": sign_name = "Лев"; sign_db = 5; break;
+                case "6": sign_name = "Дева"; sign_db = 6; break;
+                case "7": sign_name = "Весы"; sign_db = 7; break;
+                case "8": sign_name = "Скорпион"; sign_db = 8; break;
+                case "9": sign_name = "Стрелец"; sign_db = 9; break;
+                case "10": sign_name = "Козерог"; sign_db = 10; break;
+                case "11": sign_name = "Водолей"; sign_db = 11; break;
+                case "12": sign_name = "Рыбы"; sign_db = 12; break;
                 case "13": sign_db = 13; break;
             };
             let message = (content==13 ? "Вы выбрали гороскоп для всех знаков. Вот гороскоп на сегодня." : "Вы выбрали знак "+ sign_name +". Вот гороскоп на сегодня для этого знака");
