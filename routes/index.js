@@ -113,12 +113,12 @@ router.post("/", function(req, res, next) {
             else if (content == "Подписка") {
               if(user.state) {
                 db.update({subscribed: false}, {where: {userId: userId}}).then(function(user) {
-                  let message = "Вы отключили ежедневную рассылку."+allComands(user);
+                  let message = "Вы отключили ежедневную рассылку. "+allComands(user);
                   sms(message, chatId, ip);
                 })
               } else {
                 db.update({subscribed: true}, {where: {userId: userId}}).then(function(user) {
-                  let message = "Вы включили ежедневную рассылку."+allComands(user);
+                  let message = "Вы включили ежедневную рассылку. "+allComands(user);
                   sms(message, chatId, ip);
                 })
               }

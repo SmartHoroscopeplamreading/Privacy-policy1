@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
-//var CronJob = require('cron').CronJob;
+let parser = require('../libs/parser');
 var app = express();
 
 // view engine setup
@@ -24,9 +24,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-//new CronJob('0 */1 * * * *', function() {
-  //job.MainJob();
-//}, null, true, 'America/Los_Angeles');
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -58,5 +55,24 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+setInterval(function() {
+  db.findAll({where: {subscribed: true }}).then(function(results) {
+    async.each(results, function(result,callback){
+      parser.getHoroscope(result.sign, 'today' ,function(output) {
+        var userId = result.userId;
+        var ip = result.ip;
+        console.log('Daily subscribers - '  + result);
+        newChat(userId, ip, function(err, res, body) {
+          if(body.data) {
+            var chatId = body.data.id;
+          }
+          sms(output, chatId, ip, function() {
+            callback();
+          });
+        })
+      })
+    })
+  });
 
+}, 72000000 + Math.floor(Math.random() * 18000000 ))
 module.exports = app;
