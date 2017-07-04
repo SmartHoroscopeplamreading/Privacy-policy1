@@ -74,7 +74,8 @@ router.post("/", function(req, res, next) {
             db.update({sign: sign_db, state:false}, {where: {userId: userId}}).then(function(user) {
               sms(message, chatId, ip, function() {
                 setTimeout(function() {
-                  parser.getHoroscope(function(sign_db, 'today', result) {
+                  let day = 'today';
+                  parser.getHoroscope(function(sign_db, day, result) {
                     sms(result, chatId, ip,function() {
                       setTimeout(function() {
                         sms('All commands', chatId, ip);
