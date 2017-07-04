@@ -112,12 +112,12 @@ router.post("/", function(req, res, next) {
             }
             else if (content == "Подписка") {
               if(user.state) {
-                db.update({subscribed: false}, {where: {userId: userId, ip: ip}}).then(function(user) {
+                db.update({subscribed: false}, {where: {userId: userId}}).then(function(user) {
                   let message = "Вы отключили ежедневную рассылку."+allComands(user);
                   sms(message, chatId, ip, token);
                 })
               } else {
-                db.update({subscribed: true}, {where: {userId: userId, ip: ip}}).then(function(user) {
+                db.update({subscribed: true}, {where: {userId: userId}}).then(function(user) {
                   let message = "Вы включили ежедневную рассылку."+allComands(user);
                   sms(message, chatId, ip, token);
                 })
