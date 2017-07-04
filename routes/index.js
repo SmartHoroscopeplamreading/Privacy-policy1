@@ -95,7 +95,7 @@ router.post("/", function(req, res, next) {
           }
         } else {
           var errMessage = "Некорректный ввод. " + allComands(user);
-          let correctAnswer = ["Сменить","Сегодня","Завтра","Неделя","Месяц","Год"];
+          let correctAnswer = ["Сменить","Сегодня","Завтра","Неделя","Месяц","Год", "Подписка"];
           let day;
           switch(content) {
               case "Сегодня": day = "today";  break;
