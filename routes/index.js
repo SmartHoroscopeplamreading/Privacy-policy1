@@ -63,7 +63,7 @@ router.post("/", function(req, res, next) {
                     setTimeout(function() {
                       sms('All commands', chatId, ip);
                     }, 3000);
-                  });
+                  };
                 }, 1000);
               })
             })
@@ -77,7 +77,7 @@ router.post("/", function(req, res, next) {
                     setTimeout(function() {
                       sms('All commands', chatId, ip);
                     }, 3000);
-                  });
+                  };
                 }, 1000);
               })
             })
