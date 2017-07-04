@@ -76,7 +76,7 @@ router.post("/", function(req, res, next) {
                 setTimeout(function() {
                   let day = 'today';
                   parser.getHoroscope(function(sign_db, day, result) {
-                    console.log(result);
+                    console.log('result - ' + result);
                     sms(result, chatId, ip,function() {
                       setTimeout(function() {
                         sms('All commands', chatId, ip);
