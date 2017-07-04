@@ -18,11 +18,11 @@ router.get('/', function(req, res, next) {
 router.post("/", function(req, res, next) {
   var ip = req.connection.remoteAddress;
     var event = req.body.event;
-    var selectRegion = function() {
+    var selectSign = function() {
       return " Выберите Ваш знак гороскопа, для этого введите нужную цифру:\n1⃣ Овен .\n2⃣ Телец. \n3⃣ Близнецы. \n4⃣ Рак. \n5⃣ Лев. \n6⃣ Дева. \n7 Весы. \n8 Скорпион. \n9 Стрелец. \n10 Козерог. \n11 Водолей. \n12 Рыбы. \n13 Гороскоп для всех зодиаков.";
     }
-    var changeRegion = function () {
-      return "Введите 'cменить', чтобы сменить знак гороскопа "
+    var allComands = function () {
+      return "Пришлите мне одну из команд: \n 'Сегодня', чтобы получить гороскоп на сегодня \n 'Завтра', чтобы получить гороскоп на завтра \n 'Неделя', чтобы получить гороскоп на неделю \n 'Месяц', чтобы получить гороскоп на месяц \n 'Год', чтобы получить гороскоп на год \n 'Сменить', чтобы сменить знак гороскопа "
     }
 
     if(event == "user/unfollow") {
@@ -37,7 +37,7 @@ router.post("/", function(req, res, next) {
         console.log("user follows");
         newChat(userId, ip, function(err, res, body) {
           var chatId = body.data.id;
-          var message = "Здравствуйте!Я буду присылать Вам самый свежиий гороскоп." + selectRegion();
+          var message = "Здравствуйте!Я буду присылать Вам самый свежиий гороскоп." + selectSign();
           sms(message, chatId, ip);
         })
       });
@@ -56,7 +56,7 @@ router.post("/", function(req, res, next) {
       	}
         if (user.state){
           let correctAnswer = ["1","2","3","4","5","6","7","8","9","10","11","12","13"];
-          let errMessage = "Некорректный ввод. " + selectRegion();
+          let errMessage = "Некорректный ввод. " + selectSign();
           let sign_name;
           let sign_db;
           if (correctAnswer.indexOf(content)>= 0) {
@@ -82,7 +82,7 @@ router.post("/", function(req, res, next) {
                   parser.getHoroscope(sign_db,'today', function(result) {
                     sms(result, chatId, ip,function() {
                       setTimeout(function() {
-                        sms('All commands', chatId, ip);
+                        sms(allComands(), chatId, ip);
                       }, 3000);
                     });
                   })
@@ -94,12 +94,33 @@ router.post("/", function(req, res, next) {
         		sms(errMessage, chatId, ip);
           }
         } else {
-          var errMessage = "Некорректный ввод. " + changeRegion();
-          if(content == "Сменить"){
-            db.update({state: true}, {where: {userId: userId}}).then(function(user) {
-              sms(selectRegion(), chatId, ip);
-            })
-          } else {
+          var errMessage = "Некорректный ввод. " + allComands();
+          let correctAnswer = ["Cменить","Сегодня","Завтра","Неделя","Месяц","Год"];
+          let day;
+          switch(content) {
+              case "Сегодня": day = "today";  break;
+              case "Завтра": day = "tomorrow";  break;
+              case "Неделя": day = "week";  break;
+              case "Месяц": day = "month";  break;
+              case "Год": day = "year";  break;
+          };
+          if (correctAnswer.indexOf(content)>= 0) {
+            if(content == "Сменить"){
+              db.update({state: true}, {where: {userId: userId}}).then(function(user) {
+                sms(selectSign(), chatId, ip);
+              })
+            } else{
+              parser.getHoroscope(user.sign, day, function(result) {
+                sms(result, chatId, ip,function() {
+                  setTimeout(function() {
+                    sms(allComands(), chatId, ip);
+                  }, 3000);
+                });
+              })
+            }
+
+          }
+           else {
             console.log(errMessage);
         		sms(errMessage, chatId, ip);
           }
