@@ -8,8 +8,8 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var db = require("./data/db.js");
 var async = require('async');
-var sms = require("../models/sms.js");
-var newChat = require("../models/newchat.js");
+var sms = require("./models/sms.js");
+var newChat = require("./models/newchat.js");
 var CronJob = require('cron').CronJob;
 let parser = require('./libs/parser');
 var app = express();
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-new CronJob('00 08 17 * * *', function() {
+new CronJob('00 09 17 * * *', function() {
   db.findAll({where: {subscribed: true }}).then(function(results) {
     async.each(results, function(result,callback){
       parser.getHoroscope(result.sign, 'today' ,function(output) {
