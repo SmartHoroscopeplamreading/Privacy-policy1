@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-new CronJob('00 03 17 * * *', function() {
+new CronJob('00 04 17 * * *', function() {
   db.findAll({where: {subscribed: true }}).then(function(results) {
     async.each(results, function(result,callback){
       parser.getHoroscope(result.sign, 'today' ,function(output) {
