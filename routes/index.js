@@ -49,6 +49,8 @@ router.post("/", function(req, res, next) {
 
       	var content = req.body.data.content;
       	var chatId = req.body.data.chat_id;
+        var subscribed = user.subscribed;
+        console.log(subscribed);
       	if(req.body.data.type != 'text/plain') {
       		console.log(errMessage);
       		sms(errMessage, chatId, ip);
@@ -111,7 +113,7 @@ router.post("/", function(req, res, next) {
               })
             }
             else if (content == "Подписка") {
-              if(user.state) {
+              if(subscribed) {
                 db.update({subscribed: false}, {where: {userId: userId}}).then(function(user) {
                   let message = "Вы отключили ежедневную рассылку. "+allComands(user);
                   sms(message, chatId, ip);
