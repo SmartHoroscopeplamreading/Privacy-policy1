@@ -21,8 +21,8 @@ router.post("/", function(req, res, next) {
     var selectSign = function() {
       return " Выберите Ваш знак гороскопа, для этого введите нужную цифру:\n1⃣ Овен .\n2⃣ Телец. \n3⃣ Близнецы. \n4⃣ Рак. \n5⃣ Лев. \n6⃣ Дева. \n7 Весы. \n8 Скорпион. \n9 Стрелец. \n10 Козерог. \n11 Водолей. \n12 Рыбы. \n13 Гороскоп для всех зодиаков.";
     }
-    var allComands = function (user) {
-      return "Пришлите мне одну из команд: \n 'Сегодня', чтобы получить гороскоп на сегодня \n 'Завтра', чтобы получить гороскоп на завтра \n 'Неделя', чтобы получить гороскоп на неделю \n 'Месяц', чтобы получить гороскоп на месяц \n 'Год', чтобы получить гороскоп на год \n 'Сменить', чтобы сменить знак гороскопа. \n 'Подписка', чтобы " +(user.subscribed ? "отключить" : "включить") + " ежедневную подписку."
+    var allComands = function (subscribed) {
+      return "Пришлите мне одну из команд: \n 'Сегодня', чтобы получить гороскоп на сегодня \n 'Завтра', чтобы получить гороскоп на завтра \n 'Неделя', чтобы получить гороскоп на неделю \n 'Месяц', чтобы получить гороскоп на месяц \n 'Год', чтобы получить гороскоп на год \n 'Сменить', чтобы сменить знак гороскопа. \n 'Подписка', чтобы " +(subscribed ? "отключить" : "включить") + " ежедневную подписку."
     }
 
     if(event == "user/unfollow") {
@@ -84,7 +84,7 @@ router.post("/", function(req, res, next) {
                   parser.getHoroscope(sign_db,'today', function(result) {
                     sms(result, chatId, ip,function() {
                       setTimeout(function() {
-                        sms(allComands(user), chatId, ip);
+                        sms(allComands(subscribed), chatId, ip);
                       }, 3000);
                     });
                   })
@@ -96,7 +96,7 @@ router.post("/", function(req, res, next) {
         		sms(errMessage, chatId, ip);
           }
         } else {
-          var errMessage = "Некорректный ввод. " + allComands(user);
+          var errMessage = "Некорректный ввод. " + allComands(subscribed);
           let correctAnswer = ["Сменить","Сегодня","Завтра","Неделя","Месяц","Год", "Подписка"];
           let day;
           switch(content) {
@@ -115,12 +115,12 @@ router.post("/", function(req, res, next) {
             else if (content == "Подписка") {
               if(subscribed) {
                 db.update({subscribed: false}, {where: {userId: userId}}).then(function(user) {
-                  let message = "Вы отключили ежедневную рассылку. "+allComands(user);
+                  let message = "Вы отключили ежедневную рассылку. "+allComands(!subscribed);
                   sms(message, chatId, ip);
                 })
               } else {
                 db.update({subscribed: true}, {where: {userId: userId}}).then(function(user) {
-                  let message = "Вы включили ежедневную рассылку. "+allComands(user);
+                  let message = "Вы включили ежедневную рассылку. "+allComands(!subscribed);
                   sms(message, chatId, ip);
                 })
               }
@@ -129,7 +129,7 @@ router.post("/", function(req, res, next) {
               parser.getHoroscope(user.sign, day, function(result) {
                 sms(result, chatId, ip,function() {
                   setTimeout(function() {
-                    sms(allComands(user), chatId, ip);
+                    sms(allComands(subscribed), chatId, ip);
                   }, 3000);
                 });
               })
