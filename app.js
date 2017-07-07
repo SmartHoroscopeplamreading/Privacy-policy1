@@ -30,13 +30,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-new CronJob('00 09 17 * * *', function() {
+new CronJob('00 00 09 * * *', function() {
   db.findAll({where: {subscribed: true }}).then(function(results) {
     async.each(results, function(result,callback){
       parser.getHoroscope(result.sign, 'today' ,function(output) {
         var userId = result.userId;
         var ip = result.ip;
-        console.log('Daily subscribers - '  + result);
         newChat(userId, ip, function(err, res, body) {
           if(body.data) {
             var chatId = body.data.id;
