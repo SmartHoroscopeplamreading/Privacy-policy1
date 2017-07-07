@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var http = require("http");
 var db = require("./data/db.js");
 var async = require('async');
 var sms = require("./models/sms.js");
@@ -81,7 +82,7 @@ app.use(function(err, req, res, next) {
 });
 setInterval(function() {
     console.log("Dont sleep!");
-    http.get("http://jokebotkg.herokuapp.com");
+    http.get("http://horoscopebotkg.herokuapp.com");
 }, 300000); // every 5 minutes (300000)
 
 module.exports = app;
