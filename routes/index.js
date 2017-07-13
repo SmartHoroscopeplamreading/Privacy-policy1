@@ -22,7 +22,8 @@ router.post("/", function(req, res, next) {
       return " Выберите Ваш знак гороскопа, для этого введите нужную цифру:\n1️⃣ Овен .\n2️⃣ Телец. \n3️⃣ Близнецы. \n4️⃣ Рак. \n5️⃣ Лев. \n6️⃣ Дева. \n7️⃣ Весы. \n8️⃣ Скорпион. \n9️⃣ Стрелец. \n1⃣0⃣Козерог. \n1⃣1⃣Водолей. \n1⃣2⃣Рыбы. \n1⃣3⃣Гороскоп для всех зодиаков.";
     }
     var allComands = function (subscribed) {
-      return "Пришлите мне одну из команд: \n 'Сегодня', чтобы получить гороскоп на сегодня \n 'Завтра', чтобы получить гороскоп на завтра \n 'Неделя', чтобы получить гороскоп на неделю \n 'Месяц', чтобы получить гороскоп на месяц \n 'Год', чтобы получить гороскоп на год \n 'Сменить', чтобы сменить знак гороскопа. \n 'Подписка', чтобы " +(subscribed ? "отключить" : "включить") + " ежедневную подписку."
+      return "Пришлите мне одну из команд: \n'Сменить', чтобы сменить знак гороскопа. \n'Подписка', чтобы " +(subscribed ? "отключить" : "включить") + " ежедневную подписку." +
+              (subscribed ? "" : "\n'Сегодня', чтобы получить гороскоп на сегодня")
     }
 
     if(event == "user/unfollow") {
@@ -96,46 +97,34 @@ router.post("/", function(req, res, next) {
           }
         } else {
           var errMessage = "Некорректный ввод. " + allComands(subscribed);
-          let correctAnswer = ["Сменить","Сегодня","Завтра","Неделя","Месяц","Год", "Подписка"];
-          let day;
-          switch(content) {
-              case "Сегодня": day = "today";  break;
-              case "Завтра": day = "tomorrow";  break;
-              case "Неделя": day = "week";  break;
-              case "Месяц": day = "month";  break;
-              case "Год": day = "year";  break;
-          };
-          if (correctAnswer.indexOf(content)>= 0) {
-            if(content == "Сменить"){
-              db.update({state: true}, {where: {userId: userId}}).then(function(user) {
-                sms(selectSign(), chatId, ip);
+          if(content == "Сменить"){
+            db.update({state: true}, {where: {userId: userId}}).then(function(user) {
+              sms(selectSign(), chatId, ip);
+            })
+          }
+          else if (content == "Подписка") {
+            if(subscribed) {
+              db.update({subscribed: false}, {where: {userId: userId}}).then(function(user) {
+                let message = "Вы отключили ежедневную рассылку. "+allComands(!subscribed);
+                sms(message, chatId, ip);
               })
-            }
-            else if (content == "Подписка") {
-              if(subscribed) {
-                db.update({subscribed: false}, {where: {userId: userId}}).then(function(user) {
-                  let message = "Вы отключили ежедневную рассылку. "+allComands(!subscribed);
-                  sms(message, chatId, ip);
-                })
-              } else {
-                db.update({subscribed: true}, {where: {userId: userId}}).then(function(user) {
-                  let message = "Вы включили ежедневную рассылку. "+allComands(!subscribed);
-                  sms(message, chatId, ip);
-                })
-              }
-            }
-            else {
-              parser.getHoroscope(user.sign, day, function(result) {
-                sms(result, chatId, ip,function() {
-                  setTimeout(function() {
-                    sms(allComands(subscribed), chatId, ip);
-                  }, 3000);
-                });
+            } else {
+              db.update({subscribed: true}, {where: {userId: userId}}).then(function(user) {
+                let message = "Вы включили ежедневную рассылку. "+allComands(!subscribed);
+                sms(message, chatId, ip);
               })
             }
           }
-           else {
-        		sms(errMessage, chatId, ip);
+          else if (content == "Сегодня"){
+            parser.getHoroscope(user.sign, 'today', function(result) {
+              sms(result, chatId, ip,function() {
+                setTimeout(function() {
+                  sms(allComands(subscribed), chatId, ip);
+                }, 3000);
+              });
+            })
+          } else {
+      		sms(errMessage, chatId, ip);
           }
         }
      })

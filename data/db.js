@@ -22,7 +22,7 @@ var user = sequelize.define("user", {
 	},
 	subscribed:{
 		type:Sequelize.BOOLEAN,
-			defaultValue:false
+			defaultValue:true
 	}
 })
 
