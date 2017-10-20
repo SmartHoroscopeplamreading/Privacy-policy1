@@ -22,7 +22,7 @@ router.post("/", function(req, res, next) {
       return " Выберите Ваш знак гороскопа, для этого введите нужную цифру:\n1️⃣ Овен .\n2️⃣ Телец. \n3️⃣ Близнецы. \n4️⃣ Рак. \n5️⃣ Лев. \n6️⃣ Дева. \n7️⃣ Весы. \n8️⃣ Скорпион. \n9️⃣ Стрелец. \n1⃣0⃣ Козерог. \n1⃣1⃣ Водолей. \n1⃣2⃣ Рыбы. \n1⃣3⃣ Гороскоп для всех зодиаков.";
     }
     var allComands = function (subscribed) {
-      return "Пришлите мне одну из команд: \n'Сменить', чтобы сменить знак гороскопа. \n'Подписка', чтобы " +(subscribed ? "ОТКЛЮЧИТЬ" : "ВКЛЮЧИТЬ") + " ежедневную подписку." +
+      return "Для внесения изменений пришлите мне одну из команд: \n'Сменить', чтобы сменить знак гороскопа. \n'Подписка', чтобы " +(subscribed ? "отключить" : "включить") + " ежедневную рассылку." +
               (subscribed ? "" : "\n'Сегодня', чтобы получить гороскоп на сегодня")
     }
 
@@ -38,7 +38,7 @@ router.post("/", function(req, res, next) {
         console.log("user follows");
         newChat(userId, ip, function(err, res, body) {
           var chatId = body.data.id;
-          var message = "Здравствуйте!Я буду присылать Вам самый свежиий гороскоп." + selectSign();
+          var message = "Здравствуйте! Для получения свежего гороскопа, выберите свой знак зодиака, отправив нужную цифру: \n1️⃣ Овен .\n2️⃣ Телец. \n3️⃣ Близнецы. \n4️⃣ Рак. \n5️⃣ Лев. \n6️⃣ Дева. \n7️⃣ Весы. \n8️⃣ Скорпион. \n9️⃣ Стрелец. \n1⃣0⃣ Козерог. \n1⃣1⃣ Водолей. \n1⃣2⃣ Рыбы. \n1⃣3⃣ Гороскоп для всех зодиаков.";
           sms(message, chatId, ip);
         })
       });
@@ -58,7 +58,7 @@ router.post("/", function(req, res, next) {
       	}
         if (user.state){
           let correctAnswer = ["1","2","3","4","5","6","7","8","9","10","11","12","13"];
-          let errMessage = "Некорректный ввод. " + selectSign();
+          let errMessage = "Неверная команда. " + selectSign();
           let sign_name;
           let sign_db;
           if (correctAnswer.indexOf(content)>= 0) {
@@ -77,7 +77,7 @@ router.post("/", function(req, res, next) {
                 case "12": sign_name = "Рыбы"; sign_db = 12; break;
                 case "13": sign_db = 13; break;
             };
-            let message = (content==13 ? "Вы выбрали гороскоп для всех знаков. Вот гороскоп на сегодня." : "Вы выбрали знак "+ sign_name +". Вот гороскоп на сегодня для этого знака");
+            let message = (content==13 ? "Вы выбрали гороскоп для всех знаков. Следующим сообщением вы получите гороскоп на сегодня." : "Вы выбрали знак "+ sign_name +". Следующим сообщением вы получите гороскоп на сегодня");
             db.update({sign: sign_db, state:false}, {where: {userId: userId}}).then(function(user) {
               sms(message, chatId, ip, function() {
                 setTimeout(function() {
@@ -96,7 +96,7 @@ router.post("/", function(req, res, next) {
         		sms(errMessage, chatId, ip);
           }
         } else {
-          var errMessage = "Некорректный ввод. " + allComands(subscribed);
+          var errMessage = "Неверная команда. " + allComands(subscribed);
           if(content == "Сменить"){
             db.update({state: true}, {where: {userId: userId}}).then(function(user) {
               sms(selectSign(), chatId, ip);
