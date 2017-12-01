@@ -1,8 +1,12 @@
 "use strict"
-let request = require('request');
-let cheerio = require('cheerio');
+var Xray = require('x-ray');
+var x = Xray({
+    filters: {
+      replace: function (value) {
+        return typeof value === 'string' ? value.replace(/(?:\r\n|\r|\n|\t|\\)/g, "").trim() : value}}
+});
 
-exports.getHoroscope = function(sign,day,callback) {
+module.exports = function(sign,day,callback) {
   let sign_name;
   switch(sign) {
   case 1: sign_name = "aries"; break;
@@ -18,20 +22,11 @@ exports.getHoroscope = function(sign,day,callback) {
   case 11: sign_name = "aquarius"; break;
   case 12: sign_name = "pisces"; break;}
 
-  let url = 'https://horo.mail.ru/prediction/'+ (sign == 13 ? "" : sign_name) +'/'+ day +'/';
-
-	request(url,function(err, res, body) {
-    if (!err && res.statusCode == 200) {
-      var $ = cheerio.load(body);
-      var data = [];
-      $('.article__text p').each(function (i,element) {
-        data[i] = $(this).text();
-      });
-      data = data.join(" ");
-      callback(data);
-    } else {
-      console.log(err);
-    }
-
-	})
+  let url = 'https://horoscopes.rambler.ru/'+ (sign == 13 ? "" : sign_name +'/');
+  x(url, '._1dQ3',[{
+    horo:'span | replace'
+  }])
+  (function(err,data) {
+    callback(data[0].horo)
+  })
 }
