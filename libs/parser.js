@@ -6,7 +6,7 @@ var x = Xray({
         return typeof value === 'string' ? value.replace(/(?:\r\n|\r|\n|\t|\\)/g, "").trim() : value}}
 });
 
-module.exports = function(sign,day,callback) {
+exports.getHoroscope = function(sign,day,callback) {
   let sign_name;
   switch(sign) {
   case 1: sign_name = "aries"; break;
